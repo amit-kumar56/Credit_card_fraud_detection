@@ -1,0 +1,59 @@
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Oct 26 19:00:07 2019
+
+@author: heroo
+"""
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+#import seaborn as sns
+
+dattaset=pd.read_csv("/home/heroo/creditcardfraud/creditcard.csv")
+x=dattaset.iloc[:,1:30].values
+y=dattaset.iloc[:,30].values
+
+# Feature Scaling
+from sklearn.preprocessing import StandardScaler
+sc = StandardScaler()
+sc.fit_transform(x)
+
+# Splitting the dataset into the Training set and Test set
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(x, y, test_size = 0.25, random_state = 0)
+
+
+# Fitting K-NN to the Training set
+from sklearn.neighbors import KNeighborsClassifier
+classifier = KNeighborsClassifier(n_neighbors = 5, metric = 'minkowski', p = 2)
+classifier.fit(X_train, y_train)
+
+# Predicting the Test set results
+y_pred = classifier.predict(X_test)
+
+# Making the Confusion Matrix
+from sklearn.metrics import confusion_matrix
+cm = confusion_matrix(y_test, y_pred)
+
+from sklearn.metrics import classification_report
+print(classification_report(y_test, y_pred))
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+from sklearn.metrics import classification_report
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00     71082
+           1       0.92      0.68      0.78       120
+
+   micro avg       1.00      1.00      1.00     71202
+   macro avg       0.96      0.84      0.89     71202
+weighted avg       1.00      1.00      1.00     71202
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+this mean class 0 has 100% precision ,means it is detected completely but class 1 has only 92% precision ,means it is detected only 92% and remaining 8% can be achieved by train more and more.
+
+
+
+THANK YOU!
